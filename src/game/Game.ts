@@ -5,7 +5,7 @@
 import { AudioEngine } from '../core/Audio';
 import { Input } from '../core/Input';
 import { SpatialHash } from '../core/SpatialHash';
-import { writeSave, type SaveData } from '../core/Save';
+import { browserStorage, writeSave, type SaveData } from '../core/Save';
 import { TAU, chance, clamp, damp, dampAngle, dist2, pick, rand, weightedPick } from '../core/math';
 import type { Stage } from '../render/Stage';
 import type { Fx } from '../render/Fx';
@@ -144,7 +144,7 @@ export class Game {
   }
 
   persist(): void {
-    writeSave(window.localStorage, this.save);
+    writeSave(browserStorage(), this.save);
   }
 
   // ------------------------------------------------------------------ lifecycle

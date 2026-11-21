@@ -42,6 +42,19 @@ export function defaultSave(): SaveData {
 
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 
+/** localStorage, or undefined where merely touching it throws (sandboxed iframes, some private modes). */
+export function browserStorage(): StorageLike | undefined {
+  try {
+    const s = window.localStorage;
+    const probe = '__starblaze_probe__';
+    s.setItem(probe, '1');
+    s.removeItem(probe);
+    return s;
+  } catch {
+    return undefined;
+  }
+}
+
 const num = (v: unknown, fallback: number): number =>
   typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : fallback;
 

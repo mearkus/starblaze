@@ -1,7 +1,7 @@
 import './style.css';
 import { AudioEngine } from './core/Audio';
 import { Input } from './core/Input';
-import { loadSave } from './core/Save';
+import { browserStorage, loadSave } from './core/Save';
 import { Game } from './game/Game';
 import { Stage } from './render/Stage';
 import { UI } from './ui/UI';
@@ -19,7 +19,7 @@ function boot(): void {
     throw err;
   }
 
-  const save = loadSave(window.localStorage);
+  const save = loadSave(browserStorage());
   const audio = new AudioEngine();
   audio.applySettings(save.settings);
   const input = new Input(container);
