@@ -226,21 +226,25 @@ h3 {
 /* ------------------------------------------------------------ title */
 
 #title {
-  justify-content: flex-end;
+  justify-content: space-between;
   padding-bottom: max(5cqh, env(safe-area-inset-bottom));
   background: linear-gradient(180deg, rgba(2, 0, 10, 0.35) 0%, rgba(2, 0, 10, 0) 30%, rgba(2, 0, 10, 0) 50%, rgba(2, 0, 10, 0.75));
 }
 
 .logo-wrap {
-  position: absolute;
-  top: max(9cqh, env(safe-area-inset-top));
-  left: 0;
-  right: 0;
+  margin-top: max(5cqh, env(safe-area-inset-top));
   text-align: center;
 }
 
+.title-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 3cqh, 22px);
+}
+
 .logo {
-  font-size: 19cqw;
+  font-size: min(19cqw, 11cqh);
   font-weight: 900;
   font-style: italic;
   letter-spacing: 0.02em;
@@ -1396,9 +1400,28 @@ table.controls th {
   }
 }
 
-/* Phones held sideways: ask for portrait. */
-@media (orientation: landscape) and (pointer: coarse) and (max-height: 560px) {
-  #rotate {
-    display: flex;
+/* Short frames (e.g. a small embedded preview): keep the title screen tidy. */
+@container frame (max-height: 560px) {
+  .tagline,
+  .title-stats,
+  #title .hint {
+    display: none;
   }
+  #title .menu {
+    gap: 8px;
+  }
+  #title .menu button {
+    padding: 0.6em 1em;
+  }
+}
+
+/* Shown from JS only when the phone itself is held sideways (not when the game sits in a wide box). */
+#rotate.show {
+  display: flex;
+}
+
+.rotate-skip {
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  color: rgba(200, 225, 255, 0.6);
 }

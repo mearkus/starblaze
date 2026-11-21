@@ -77,13 +77,15 @@
           <div class="logo">STAR<span>BLAZE</span></div>
           <div class="tagline">ARCADE SPACE COMBAT</div>
         </div>
-        <div class="menu">
-          <button data-action="launch" class="primary">LAUNCH</button>
-          <button data-action="hangar">HANGAR</button>
-          <button data-action="controls">CONTROLS</button>
+        <div class="title-bottom">
+          <div class="menu">
+            <button data-action="launch" class="primary">LAUNCH</button>
+            <button data-action="hangar">HANGAR</button>
+            <button data-action="controls">CONTROLS</button>
+          </div>
+          <div id="title-stats" class="title-stats"></div>
+          <div class="hint"><span class="desk-only">Press <kbd>ENTER</kbd> to launch · <kbd>M</kbd> mutes</span><span class="touch-only">Drag anywhere to fly · auto-fire is on</span></div>
         </div>
-        <div id="title-stats" class="title-stats"></div>
-        <div class="hint"><span class="desk-only">Press <kbd>ENTER</kbd> to launch · <kbd>M</kbd> mutes</span><span class="touch-only">Hold your phone upright · drag to fly</span></div>
       </section>
 
       <section id="hangar" class="screen">
@@ -168,7 +170,8 @@
 
     <div id="rotate">
       <div class="rotate-icon">⟳</div>
-      <div>Turn your phone upright — Starblaze plays in portrait.</div>
+      <div>Starblaze plays with your phone upright.</div>
+      <div class="rotate-skip">Tap to play anyway</div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

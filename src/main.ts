@@ -34,6 +34,8 @@ function boot(): void {
   window.addEventListener('keydown', unlock);
   window.addEventListener('touchstart', unlock);
 
+  setupRotateHint();
+
   // Debug hook for automated smoke tests.
   (window as unknown as { __starblaze: Game }).__starblaze = game;
 
@@ -66,6 +68,36 @@ function boot(): void {
     document.getElementById('boot')?.classList.add('gone');
     requestAnimationFrame(frame);
   });
+}
+
+/**
+ * Suggest holding the phone upright, based on the device's real orientation. The page's own
+ * width/height can't be trusted: inside the Claude app (or any embed) the game may sit in a wide,
+ * short box while the phone is upright. Tapping the hint dismisses it for the session.
+ */
+function setupRotateHint(): void {
+  const el = document.getElementById('rotate');
+  if (!el) return;
+  let dismissed = false;
+  const deviceLandscape = (): boolean => {
+    const type = screen.orientation?.type;
+    if (type) return type.startsWith('landscape');
+    const legacy = (window as unknown as { orientation?: number }).orientation;
+    if (typeof legacy === 'number') return Math.abs(legacy) === 90;
+    return false;
+  };
+  const check = () => {
+    const phone = window.matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) < 600;
+    el.classList.toggle('show', !dismissed && phone && deviceLandscape());
+  };
+  el.addEventListener('click', () => {
+    dismissed = true;
+    check();
+  });
+  screen.orientation?.addEventListener?.('change', check);
+  window.addEventListener('orientationchange', check);
+  window.addEventListener('resize', check);
+  check();
 }
 
 boot();
