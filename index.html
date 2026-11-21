@@ -2,11 +2,178 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#04020c" />
+    <meta name="description" content="Starblaze — a top-down 3D arcade space shooter with huge particle effects, level ups, power-ups and ship upgrades." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <title>Starblaze</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="frame">
+    <div id="game"></div>
+
+    <div id="ui">
+      <div id="hud" class="hidden">
+        <div class="hud-top">
+          <div class="hud-score">
+            <div class="label">SCORE</div>
+            <div id="score" class="big">0</div>
+            <div id="combo" class="combo"></div>
+          </div>
+          <div class="hud-wave"><div id="wave">GET READY</div></div>
+          <div class="hud-hi">
+            <div class="label">HIGH</div>
+            <div id="hi">0</div>
+            <button id="pause-btn" class="pause-btn" data-action="pause" aria-label="Pause">II</button>
+          </div>
+        </div>
+        <div id="boss" class="boss hidden">
+          <div class="boss-name">DREADNOUGHT</div>
+          <div class="bar"><div id="boss-fill"></div></div>
+        </div>
+
+        <div class="hud-bottom">
+          <div class="hud-row">
+            <div id="perks" class="perks"></div>
+            <div id="powers" class="powers"></div>
+          </div>
+          <div class="hud-xp">
+            <div class="lvl">LV <span id="level">1</span></div>
+            <div class="bar xp"><div id="xp-fill"></div></div>
+          </div>
+          <div class="hud-row">
+            <div class="hud-bars">
+              <div class="bar-row">
+                <span class="tag">HULL</span>
+                <div class="bar hull"><div id="hull-fill"></div></div>
+                <span id="hull-num" class="num"></span>
+              </div>
+              <div class="bar-row">
+                <span class="tag">SHIELD</span>
+                <div class="bar shield"><div id="shield-fill"></div></div>
+              </div>
+            </div>
+            <button class="ability" id="ab-dash" aria-label="Dash">
+              <span class="key">SHIFT</span>
+              <span class="name">DASH</span>
+              <span class="cd"><span id="dash-cd"></span></span>
+            </button>
+            <button class="ability" id="ab-bomb" aria-label="Bomb">
+              <span class="key">SPACE</span>
+              <span class="name">BOMB</span>
+              <span class="count">×<span id="bombs">1</span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="labels"></div>
+      <div id="floaters"></div>
+      <div id="banner"><div class="b-title"></div><div class="b-sub"></div></div>
+      <div id="toast"></div>
+
+      <section id="title" class="screen">
+        <div class="logo-wrap">
+          <div class="logo">STAR<span>BLAZE</span></div>
+          <div class="tagline">ARCADE SPACE COMBAT</div>
+        </div>
+        <div class="title-bottom">
+          <div class="menu">
+            <button data-action="launch" class="primary">LAUNCH</button>
+            <button data-action="hangar">HANGAR</button>
+            <button data-action="controls">CONTROLS</button>
+          </div>
+          <div id="title-stats" class="title-stats"></div>
+          <div class="hint"><span class="desk-only">Press <kbd>ENTER</kbd> to launch · <kbd>M</kbd> mutes</span><span class="touch-only">Drag anywhere to fly · auto-fire is on</span></div>
+        </div>
+      </section>
+
+      <section id="hangar" class="screen">
+        <div class="hangar-panel">
+          <header>
+            <h2>HANGAR</h2>
+            <div class="credits">¤ <span id="h-credits">0</span></div>
+          </header>
+          <div class="scroll">
+            <h3>SHIPS</h3>
+            <div id="ships" class="ships"></div>
+            <h3>UPGRADES</h3>
+            <div id="upgrades" class="upgrades"></div>
+          </div>
+          <footer>
+            <button data-action="title">BACK</button>
+            <button data-action="launch" class="primary">LAUNCH</button>
+          </footer>
+        </div>
+      </section>
+
+      <section id="levelup" class="screen overlay">
+        <div class="lv-title">LEVEL UP!</div>
+        <div class="lv-sub">LEVEL <span id="lv-num">2</span> — CHOOSE AN UPGRADE</div>
+        <div id="cards" class="cards"></div>
+        <div class="hint"><span class="desk-only"><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> or click a card</span><span class="touch-only">Tap a card</span></div>
+      </section>
+
+      <section id="pause" class="screen overlay">
+        <h2>PAUSED</h2>
+        <div class="menu">
+          <button data-action="resume" class="primary">RESUME</button>
+          <button data-toggle="music">MUSIC: ON</button>
+          <button data-toggle="sfx">SOUND FX: ON</button>
+          <button data-toggle="shake">SCREEN SHAKE: ON</button>
+          <button data-toggle="autofire">AUTO-FIRE: ON</button>
+          <button data-action="controls">CONTROLS</button>
+          <button data-action="quit" class="danger">END RUN</button>
+        </div>
+      </section>
+
+      <section id="gameover" class="screen overlay">
+        <div class="go-title">SHIP DESTROYED</div>
+        <div id="go-high" class="go-high hidden">★ NEW HIGH SCORE ★</div>
+        <div id="go-score" class="go-score">0</div>
+        <div id="go-stats" class="go-stats"></div>
+        <div class="go-credits">+ ¤ <span id="go-credits">0</span> CREDITS</div>
+        <div class="go-total">BANK: ¤ <span id="go-total">0</span> — spend it in the Hangar</div>
+        <div class="menu row">
+          <button data-action="retry" class="primary">RETRY</button>
+          <button data-action="hangar">HANGAR</button>
+          <button data-action="title">MENU</button>
+        </div>
+      </section>
+
+      <section id="controls" class="screen overlay">
+        <h2>CONTROLS</h2>
+        <table class="controls">
+          <tr><th>Touch</th><td>Drag anywhere to fly. Auto-fire and auto-aim do the rest. A second finger aims manually. Tap DASH / BOMB.</td></tr>
+          <tr><th>Move</th><td><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / arrows · left stick</td></tr>
+          <tr><th>Aim</th><td>Mouse · arrows while moving with WASD · right stick · otherwise auto-aim</td></tr>
+          <tr><th>Fire</th><td>Auto-fire is on (<kbd>F</kbd> toggles) · hold mouse · <kbd>RT</kbd></td></tr>
+          <tr><th>Dash</th><td><kbd>SHIFT</kbd> · right-click · <kbd>B</kbd>/<kbd>LB</kbd> — invulnerable, rams enemies</td></tr>
+          <tr><th>Bomb</th><td><kbd>SPACE</kbd> · <kbd>Y</kbd>/<kbd>RB</kbd> — wipes bullets, wrecks everything nearby</td></tr>
+          <tr><th>Pause</th><td><kbd>ESC</kbd> / <kbd>P</kbd> · <kbd>START</kbd> · <kbd>II</kbd> button</td></tr>
+        </table>
+        <p class="tips">Collect XP crystals to level up and pick perks. Elites (gold) always drop power-ups.
+          Every 5th wave a Dreadnought attacks. Credits earned each run buy permanent upgrades and new ships in the Hangar.</p>
+        <button data-action="close-controls" class="primary">GOT IT</button>
+      </section>
+
+      <div id="touch">
+        <div id="stick-move" class="stick"><div class="knob"></div></div>
+        <div id="stick-aim" class="stick aim"><div class="knob"></div></div>
+      </div>
+
+      <div id="boot" class="boot">
+        <div class="boot-inner">INITIALISING REACTOR…</div>
+      </div>
+    </div>
+    </div>
+
+    <div id="rotate">
+      <div class="rotate-icon">⟳</div>
+      <div>Starblaze plays with your phone upright.</div>
+      <div class="rotate-skip">Tap to play anyway</div>
+    </div>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
