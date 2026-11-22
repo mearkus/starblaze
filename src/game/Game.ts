@@ -469,7 +469,7 @@ export class Game {
       p.aim = Math.atan2(aim.y, aim.x);
     } else {
       // Touch / keyboard-only: auto-aim at the closest threat, else face the direction of travel.
-      const t = this.nearestEnemy(p.x, p.z, 75);
+      const t = this.autoAimTarget(p.x, p.z);
       if (t) p.aim = Math.atan2(t.z - p.z, t.x - p.x);
       else if (Math.hypot(mv.x, mv.y) > 0.2) p.aim = Math.atan2(mv.y, mv.x);
     }
@@ -697,6 +697,18 @@ export class Game {
       });
     }
     this.audio.missile();
+  }
+
+  /**
+   * Auto-aim target: the boss while it's on the field, unless something else is about to hit
+   * you (within 12 units); otherwise the nearest enemy.
+   */
+  autoAimTarget(x: number, z: number): Enemy | null {
+    const near = this.nearestEnemy(x, z, 75);
+    const b = this.boss;
+    if (!b || !b.alive || b.age < 1.5 || dist2(x, z, b.x, b.z) > 75 * 75) return near;
+    if (near && near !== b && dist2(x, z, near.x, near.z) < 12 * 12) return near;
+    return b;
   }
 
   nearestEnemy(x: number, z: number, maxDist: number): Enemy | null {
@@ -1026,6 +1038,8 @@ export class Game {
   }
 
   bossPhase(e: Enemy): void {
+    // A breather: every phase change drops a repair towards the player.
+    this.dropPower(e.x + (this.player.x - e.x) * 0.4, e.z + (this.player.z - e.z) * 0.4, 'repair');
     this.fx.explosion(e.x, e.z, 0xff2a4a, 3.5);
     this.fx.shockwave(e.x, e.z, 0xff2a4a, 40, 0.8, 3);
     this.addShockwave(e.x, e.z, 40, 70, 0, 0, false, 0xff2a4a);
@@ -1090,8 +1104,8 @@ export class Game {
     }
   }
 
-  private dropPower(x: number, z: number): void {
-    const def = weightedPick(POWERUPS, (p) => p.weight);
+  private dropPower(x: number, z: number, id?: PowerUpId): void {
+    const def = id ? POWERUP_BY_ID[id] : weightedPick(POWERUPS, (p) => p.weight);
     if (!def) return;
     this.pickups.push({
       kind: 'power', x, z, vx: rand(-4, 4), vz: rand(-4, 4), value: 0, power: def.id,

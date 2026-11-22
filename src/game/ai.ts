@@ -233,18 +233,19 @@ function updateBoss(g: Game, e: Enemy, dt: number, toPlayer: number): void {
   const pat = patterns[e.state];
   e.timer2 -= dt;
   if (e.timer2 > 0) return;
-  const spd = 1 + phase * 0.18;
+  // Phase 1 is a warm-up: slower bullets and thinner patterns; phases 2-3 ramp up.
+  const spd = phase === 0 ? 0.82 : 1 + phase * 0.18;
   if (pat === 0) {
-    e.timer2 = phase === 2 ? 0.05 : 0.075;
-    const arms = 3 + phase;
+    e.timer2 = phase === 2 ? 0.05 : phase === 1 ? 0.075 : 0.1;
+    const arms = 2 + phase;
     const base = e.spin * 2.6;
     for (let k = 0; k < arms; k++) {
       const a = base + (k / arms) * TAU;
       g.enemyShoot(e.x + Math.cos(a) * 9.5, e.z + Math.sin(a) * 9.5, a, 19 * spd, false, 0xff3b5c);
     }
   } else if (pat === 1) {
-    e.timer2 = phase === 2 ? 0.42 : 0.55;
-    const n = 7 + phase * 2;
+    e.timer2 = phase === 2 ? 0.42 : phase === 1 ? 0.55 : 0.7;
+    const n = 5 + phase * 2;
     for (let k = 0; k < n; k++) {
       const a = toPlayer + (k - (n - 1) / 2) * 0.12;
       g.enemyShoot(e.x + Math.cos(a) * 7.5, e.z + Math.sin(a) * 7.5, a, 27 * spd, k % 3 === 1, 0xff8a1a);
