@@ -39,6 +39,8 @@ export class View {
   ship!: ShipModel;
   private shipKey = '';
   private boss: BossModel;
+  private bossBarBg: THREE.Mesh;
+  private bossBarFill: THREE.Mesh;
   private shield: THREE.Mesh;
   private shieldMat: THREE.ShaderMaterial;
   private reticle: THREE.Group;
@@ -80,6 +82,15 @@ export class View {
     this.boss = buildBoss();
     this.boss.group.visible = false;
     scene.add(this.boss.group);
+
+    // Health bar floating just above the boss on screen (left-anchored fill).
+    const barGeo = new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2).translate(0.5, 0, 0);
+    this.bossBarBg = new THREE.Mesh(barGeo, new THREE.MeshBasicMaterial({ color: 0x1a0610, transparent: true, opacity: 0.75, depthTest: false }));
+    this.bossBarFill = new THREE.Mesh(barGeo, new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 0.5, 0.7), depthTest: false }));
+    this.bossBarBg.renderOrder = 20;
+    this.bossBarFill.renderOrder = 21;
+    this.bossBarBg.visible = this.bossBarFill.visible = false;
+    scene.add(this.bossBarBg, this.bossBarFill);
 
     this.shieldMat = shieldMaterial();
     this.shield = new THREE.Mesh(new THREE.SphereGeometry(3.1, 32, 20), this.shieldMat);
@@ -238,6 +249,19 @@ export class View {
     const boss = g.boss;
     const bm = this.boss;
     bm.group.visible = !!boss && boss.alive;
+    this.bossBarBg.visible = this.bossBarFill.visible = bm.group.visible;
+    if (boss && boss.alive) {
+      const w = 15;
+      const frac = Math.max(0, boss.hp / boss.maxHp);
+      const bx = boss.x - w / 2;
+      const bz = boss.z + 11.5;
+      this.bossBarBg.position.set(bx - 0.25, 5, bz);
+      this.bossBarBg.scale.set(w + 0.5, 1, 1.3);
+      this.bossBarFill.position.set(bx, 5.1, bz);
+      this.bossBarFill.scale.set(Math.max(0.001, w * frac), 1, 0.8);
+      const col = (this.bossBarFill.material as THREE.MeshBasicMaterial).color;
+      col.setRGB(3, 0.4 + frac * 0.6, 0.6).lerp(c2.setScalar(4), boss.flash * 0.3);
+    }
     if (boss && boss.alive) {
       const grow = Math.min(1, 0.3 + boss.age * 0.6);
       bm.group.position.set(boss.x, 0.8 + Math.sin(t * 1.5) * 0.3, boss.z);

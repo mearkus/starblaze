@@ -29,7 +29,7 @@ export const waveHpMul = (n: number): number => 1 + 0.14 * (n - 1) + 0.004 * (n 
 export const waveSpeedMul = (n: number): number => Math.min(1.45, 1 + 0.02 * (n - 1));
 export const bossHp = (n: number): number => {
   const k = Math.max(1, Math.round(n / BOSS_EVERY));
-  return Math.round(ENEMIES.boss.hp * (1 + 0.85 * (k - 1)));
+  return Math.round(ENEMIES.boss.hp * (1 + 0.9 * (k - 1)));
 };
 
 function formationFor(kind: EnemyKind, n: number, rng: Rand): Formation {

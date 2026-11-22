@@ -28,7 +28,7 @@ export const ENEMIES: Record<EnemyKind, EnemyDef> = {
   orbiter: { kind: 'orbiter', name: 'Orbiter', hp: 70, speed: 8, radius: 2.65, score: 300, xp: 4, contact: 16, color: 0xff2ad4, cost: 3.5, minWave: 4, weight: 0.8, group: [1, 3], dropChance: 0.05 },
   ram: { kind: 'ram', name: 'Ram', hp: 60, speed: 12, radius: 2.3, score: 300, xp: 4, contact: 26, color: 0xff8a1a, cost: 3, minWave: 5, weight: 0.9, group: [2, 4], dropChance: 0.05 },
   bulwark: { kind: 'bulwark', name: 'Bulwark', hp: 280, speed: 6, radius: 3.9, score: 800, xp: 10, contact: 30, color: 0x9d6bff, cost: 7, minWave: 6, weight: 0.6, group: [1, 2], dropChance: 0.18 },
-  boss: { kind: 'boss', name: 'Dreadnought', hp: 4500, speed: 9, radius: 7.5, score: 25000, xp: 80, contact: 40, color: 0xff2a4a, cost: 0, minWave: 5, weight: 0, group: [1, 1], dropChance: 1 },
+  boss: { kind: 'boss', name: 'Dreadnought', hp: 2800, speed: 9, radius: 7.5, score: 25000, xp: 80, contact: 40, color: 0xff2a4a, cost: 0, minWave: 5, weight: 0, group: [1, 1], dropChance: 1 },
 };
 
 export const SPAWNABLE: EnemyKind[] = ['darter', 'mite', 'lancer', 'orbiter', 'ram', 'bulwark'];

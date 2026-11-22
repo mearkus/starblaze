@@ -52,6 +52,11 @@ export const BASE = {
   critMul: 2.5,
 };
 
+/** Sustained main-cannon damage per second, including average crit bonus. */
+export function cannonDps(s: PlayerStats): number {
+  return ((s.projectiles * s.damage) / s.fireInterval) * (1 + s.critChance * (s.critMul - 1));
+}
+
 export function computeStats(shipId: ShipId, up: UpgradeLevels, perks: PerkTiers): PlayerStats {
   const ship = SHIPS[shipId];
   const u = (id: keyof UpgradeLevels) => up[id] ?? 0;
